@@ -38,7 +38,7 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: CustomDrawer(onItemSelected: _onDrawerItemSelected),
-      appBar: AppBar(title: const Text('Application')),
+      appBar: AppBar(title: const Text('PlantIA')),
       body: _pages[
           _selectedIndex], // Affiche la page en fonction de l'index sélectionné
       bottomNavigationBar: BottomNavigationBar(
@@ -46,9 +46,9 @@ class _CustomBottomNavState extends State<CustomBottomNav> {
         onTap: _onBottomNavTapped,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_active), label: 'Notifications'),
+              icon: Icon(Icons.photo_sharp), label: 'Gallérie'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Gallerie'),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_camera), label: 'Photo'),
         ],
       ),
     );

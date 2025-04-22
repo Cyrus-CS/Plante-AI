@@ -1,4 +1,3 @@
-import 'package:plant_disease/testj/home_page.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_bottom_nav.dart';
 import 'onboarding_contents_screen.dart';
@@ -13,6 +12,10 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   late PageController _controller;
+  int _currentPage = 0;
+
+  final Color primaryColor = Color(0xFF234520);
+  final Color secondaryColor = Color(0xFF5B8C2D);
 
   @override
   void initState() {
@@ -20,25 +23,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.initState();
   }
 
-  int _currentPage = 0;
-  List colors = const [
-    Color(0xffDAD3C8),
-    Color(0xffFFE5DE),
-    Color(0xffDCF6E6),
-  ];
-
   AnimatedContainer _buildDots({int? index}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(50),
-        ),
-        color: Color(0xFF000000),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(50)),
+        color: _currentPage == index ? primaryColor : Colors.grey,
       ),
       margin: const EdgeInsets.only(right: 5),
       height: 10,
-      curve: Curves.easeIn,
       width: _currentPage == index ? 20 : 10,
     );
   }
@@ -50,14 +43,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     double height = SizeConfig.screenH!;
 
     return Scaffold(
-      backgroundColor: colors[_currentPage],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               flex: 3,
               child: PageView.builder(
-                physics: const BouncingScrollPhysics(),
                 controller: _controller,
                 onPageChanged: (value) => setState(() => _currentPage = value),
                 itemCount: contents.length,
@@ -66,12 +58,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     padding: const EdgeInsets.all(40.0),
                     child: Column(
                       children: [
-                        Expanded(
-                          child: Image.asset(contents[i].image),
-                        ),
-                        SizedBox(
-                          height: (height >= 840) ? 60 : 30,
-                        ),
+                        Expanded(child: Image.asset(contents[i].image)),
+                        SizedBox(height: (height >= 840) ? 60 : 30),
                         Text(
                           contents[i].title,
                           textAlign: TextAlign.center,
@@ -79,6 +67,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             fontFamily: "Mulish",
                             fontWeight: FontWeight.w600,
                             fontSize: (width <= 550) ? 30 : 35,
+                            color: primaryColor,
                           ),
                         ),
                         const SizedBox(height: 15),
@@ -88,6 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             fontFamily: "Mulish",
                             fontWeight: FontWeight.w300,
                             fontSize: (width <= 550) ? 17 : 25,
+                            color: secondaryColor,
                           ),
                           textAlign: TextAlign.center,
                         )
@@ -121,7 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: primaryColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
@@ -148,15 +138,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               TextButton(
                                 onPressed: () => _controller.jumpToPage(2),
                                 style: TextButton.styleFrom(
-                                  elevation: 0,
                                   textStyle: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: (width <= 550) ? 13 : 17,
+                                    color: primaryColor,
                                   ),
                                 ),
                                 child: const Text(
                                   "SKIP",
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Color(0xFF234520)),
                                 ),
                               ),
                               ElevatedButton(
@@ -165,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   curve: Curves.easeIn,
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
+                                  backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
                                   ),
@@ -179,7 +169,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     fontSize: (width <= 550) ? 13 : 17,
                                   ),
                                 ),
-                                child: const Text("NEXT"),
+                                child: const Text(
+                                  "NEXT",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ],
                           ),

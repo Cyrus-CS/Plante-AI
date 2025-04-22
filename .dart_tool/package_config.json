@@ -20,6 +20,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "badges",
+      "rootUri": "file:///C:/Users/diag2france/AppData/Local/Pub/Cache/hosted/pub.dev/badges-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "boolean_selector",
       "rootUri": "file:///C:/Users/diag2france/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.2",
       "packageUri": "lib/",
@@ -518,7 +524,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-04-14T15:43:45.347329Z",
+  "generated": "2025-04-16T17:19:54.177787Z",
   "generator": "pub",
   "generatorVersion": "3.7.0",
   "flutterRoot": "file:///C:/flutter",

@@ -4,66 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'bottomNavigation.dart';
 import 'sidebar_with_animation.dart';
-// import 'package:sidebar_with_animation/animated_side_bar.dart';
-
-// class HomePage extends StatefulWidget {
-//   const HomePage({super.key});
-
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   int _selectedIndex = 0;
-
-//   final List<Widget> _pages = [
-//     const Center(child: Text('Home Page Content')),
-//     const Center(child: Text('Gallery Content')),
-//     const Center(child: Text('Notifications Content')),
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SideBarAnimated(
-//         onTap: (s) {
-//           //use the index to change the main screens
-//         },
-//         //add or remove divider for settings
-//         widthSwitch: 900,
-//         mainLogoImage: 'assets/images/logo.png',
-//         sidebarItems: [
-//           ///add side bar Items
-//           SideBarItem(
-//             iconSelected: Icons.home_rounded,
-//             //unselected just if you need to use two different icons
-//             // iconUnselected: Icons.home_outlined,
-//             text: 'Home',
-//           ),
-//         ],
-//       ),
-//       // SideBarAnimated(
-//       //   mainLogoImage: 'assets/images/logo.png',
-//       //   sidebarItems: [
-//       //     SideBarItem(iconSelected: Icons.home, text: 'Home'),
-//       //     SideBarItem(iconSelected: Icons.photo, text: 'Gallery'),
-//       //     SideBarItem(
-//       //         iconSelected: Icons.notifications, text: 'Notifications'),
-//       //   ],
-//       //   widthSwitch: 1024,
-//       //   onTap: (value) {},
-//       //   // onTap: (index) {
-//       //   //   setState(() => _selectedIndex = index);
-//       //   // },
-//       // ),
-//       // Expanded(child: _pages[_selectedIndex]),
-
-//       bottomNavigationBar: BottomNavCustom(
-//         onTap: (index) => setState(() => _selectedIndex = index),
-//       ),
-//     );
-//   }
-// }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

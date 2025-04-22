@@ -34,7 +34,7 @@ class PlantDiseaseApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Plant Disease'.tr(),
+      title: 'Plante IA'.tr(),
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: themeProvider.themeMode,

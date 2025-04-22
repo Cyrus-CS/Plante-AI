@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 ///ignore: must_be_immutable
@@ -71,7 +69,7 @@ class _SideBarAnimatedState extends State<SideBarAnimated>
   @override
   void initState() {
     if (widget.sidebarItems.isEmpty) {
-      throw "Side bar Items Can't be empty";
+      throw "La sidebar ne peut pas être vide !";
     }
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200))

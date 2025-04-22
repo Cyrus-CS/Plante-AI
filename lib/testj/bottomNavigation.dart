@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
 class BottomNavCustom extends StatefulWidget {
   final ValueChanged<int> onTap;
@@ -10,13 +11,11 @@ class BottomNavCustom extends StatefulWidget {
 }
 
 class _BottomNavCustomState extends State<BottomNavCustom> {
-  int selectedIndex = 0;
+  int selectedIndex = 1; // Accueil au centre
+  int notificationCount = 0;
 
-  final List<NavigationItem> items = [
-    NavigationItem(Icons.photo_library, 'Gallery', Color(0xff5B8C2D)),
-    NavigationItem(Icons.camera, 'Camera', Color(0xff234520)),
-    NavigationItem(Icons.notifications, 'Notifications', Color(0xff234520)),
-  ];
+  final Color primaryColor = Color(0xFF234520);
+  final Color secondaryColor = Color(0xFF5B8C2D);
 
   @override
   Widget build(BuildContext context) {
@@ -28,41 +27,47 @@ class _BottomNavCustomState extends State<BottomNavCustom> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: items.map((item) {
-          final index = items.indexOf(item);
-          return GestureDetector(
-            onTap: () {
-              setState(() => selectedIndex = index);
-              widget.onTap(selectedIndex);
-            },
-            child: _buildItem(item, index == selectedIndex),
-          );
-        }).toList(),
+        children: [
+          _buildItem(Icons.photo_library, 'Gallery', 0),
+          _buildItem(Icons.home, 'Accueil', 1),
+          _buildItem(Icons.camera_alt, 'Photo', 2),
+        ],
       ),
     );
   }
 
-  Widget _buildItem(NavigationItem item, bool isSelected) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(item.icon, color: isSelected ? item.color : Colors.grey),
-        Text(
-          item.title,
-          style: TextStyle(
-            color: isSelected ? item.color : Colors.grey,
-            fontSize: 12,
-          ),
+  Widget _buildItem(IconData icon, String title, int index) {
+    Color color = selectedIndex == index ? primaryColor : Colors.grey;
+    Widget iconWidget = Icon(icon, color: color);
+
+    if (title == 'Notifications' && notificationCount > 0) {
+      iconWidget = badges.Badge(
+        badgeContent: Text(
+          '$notificationCount',
+          style: TextStyle(color: Colors.white, fontSize: 10),
         ),
-      ],
+        child: iconWidget,
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedIndex = index);
+        widget.onTap(selectedIndex);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          iconWidget,
+          Text(
+            title,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
     );
   }
-}
-
-class NavigationItem {
-  final IconData icon;
-  final String title;
-  final Color color;
-
-  NavigationItem(this.icon, this.title, this.color);
 }

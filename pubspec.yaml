@@ -19,6 +19,7 @@ dependencies:
   sidebar_with_animation: ^0.0.3
   image_picker: ^1.0.7
   image: ^4.1.3
+  badges: ^3.0.2
 
 dev_dependencies:
   flutter_test:

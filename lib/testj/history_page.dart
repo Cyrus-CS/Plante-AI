@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
 import 'dart:io';
+import '../testj/database_helper.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
   late Future<List<Map<String, dynamic>>> _predictions;
   final Set<int> _selectedItems = {};
+
+  final Color primaryColor = Color(0xFF234520);
+  final Color secondaryColor = Color(0xFF5B8C2D);
 
   @override
   void initState() {
@@ -26,16 +29,11 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void _deleteSelectedItems() async {
-    final int count = _selectedItems.length;
-
+    final count = _selectedItems.length;
     for (int id in _selectedItems) {
       await DatabaseHelper().deletePrediction(id);
     }
-
-    setState(() {
-      _selectedItems.clear();
-    });
-
+    setState(() => _selectedItems.clear());
     _loadPredictions();
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -70,11 +68,12 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historique'),
+        title: const Text('Historique des analyses'),
+        backgroundColor: primaryColor,
         actions: [
           if (_selectedItems.isNotEmpty)
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.white),
+              icon: const Icon(Icons.delete),
               onPressed: _deleteSelectedItems,
             ),
         ],
@@ -83,10 +82,10 @@ class _HistoryPageState extends State<HistoryPage> {
         future: _predictions,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Aucune prédiction trouvée.'));
+            return const Center(child: Text("Aucune prédiction trouvée."));
           }
 
           final predictions = snapshot.data!;
@@ -95,15 +94,16 @@ class _HistoryPageState extends State<HistoryPage> {
             children: [
               if (predictions.length > 1)
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.all(10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "Sélection : ${_selectedItems.length}",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       TextButton(
                         onPressed: () => _toggleSelectAll(predictions),
@@ -111,6 +111,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           _selectedItems.length == predictions.length
                               ? "Tout désélectionner"
                               : "Tout sélectionner",
+                          style: TextStyle(color: secondaryColor),
                         ),
                       ),
                     ],
@@ -119,30 +120,54 @@ class _HistoryPageState extends State<HistoryPage> {
               Expanded(
                 child: ListView.separated(
                   itemCount: predictions.length,
-                  separatorBuilder: (context, index) => Divider(),
+                  separatorBuilder: (context, index) =>
+                      const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final prediction = predictions[index];
                     final isSelected =
                         _selectedItems.contains(prediction['id']);
+                    final bool isSuccess =
+                        prediction['status']?.toLowerCase() == 'success';
 
-                    return ListTile(
-                      leading: _buildImage(prediction['imagePath']),
-                      title: Text(prediction['plantName']),
-                      subtitle: Text(
-                        'Maladie: ${prediction['disease']}\n'
-                        'Conseil: ${prediction['advice']}\n'
-                        'Date: ${prediction['dateTime']}',
+                    return Container(
+                      color: isSelected ? secondaryColor.withOpacity(0.2) : null,
+                      child: ListTile(
+                        leading: _buildImage(prediction['imagePath']),
+                        title: Text(
+                          prediction['plantName'] ?? 'Inconnue',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Maladie : ${prediction['disease'] ?? 'N/A'}"),
+                            Text("Conseil : ${prediction['advice'] ?? 'N/A'}"),
+                            Text("Date : ${prediction['dateTime'] ?? ''}"),
+                            Text(
+                              "Statut : ${isSuccess ? 'Succès ✅' : 'Erreur ❌'}",
+                              style: TextStyle(
+                                color: isSuccess ? Colors.green : Colors.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Icon(
+                          isSuccess
+                              ? Icons.check_circle_outline
+                              : Icons.error_outline,
+                          color: isSuccess ? Colors.green : Colors.red,
+                        ),
+                        onTap: () {
+                          if (_selectedItems.isNotEmpty) {
+                            _toggleSelection(prediction['id']);
+                          } else {
+                            Navigator.pushNamed(context, '/predict',
+                                arguments: prediction);
+                          }
+                        },
+                        onLongPress: () => _toggleSelection(prediction['id']),
                       ),
-                      tileColor: isSelected ? Colors.blue.shade100 : null,
-                      onLongPress: () => _toggleSelection(prediction['id']),
-                      onTap: () {
-                        if (_selectedItems.isNotEmpty) {
-                          _toggleSelection(prediction['id']);
-                        } else {
-                          Navigator.pushNamed(context, '/predict',
-                              arguments: prediction);
-                        }
-                      },
                     );
                   },
                 ),
@@ -163,7 +188,7 @@ class _HistoryPageState extends State<HistoryPage> {
         height: 50,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return Icon(Icons.broken_image, size: 50, color: Colors.grey);
+          return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
         },
       ),
     );

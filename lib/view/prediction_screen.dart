@@ -1,28 +1,31 @@
-import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import '../testj/plant_data.dart';
 import 'package:image/image.dart' as img;
-import 'package:flutter/services.dart';
+import '../testj/plant_data.dart';
 
 class PredictionPage extends StatefulWidget {
   const PredictionPage({super.key});
 
   @override
-  _PredictionPageState createState() => _PredictionPageState();
+  State<PredictionPage> createState() => _PredictionPageState();
 }
 
 class _PredictionPageState extends State<PredictionPage> {
-  String? _result;
-  String? _accuracy;
-  bool _isProcessing = false;
-  File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
   Interpreter? _interpreter;
+
+  bool _isProcessing = false;
+  File? _selectedImage;
+
+  String? _message;
+  String? _disease;
+  String? _advice;
+  String? _accuracy;
+
+  final allowedPlants = ['tomato', 'apple', 'mango'];
 
   @override
   void initState() {
@@ -32,115 +35,88 @@ class _PredictionPageState extends State<PredictionPage> {
 
   Future<void> _loadModel() async {
     try {
-      _interpreter = await Interpreter.fromAsset(
-          "assets/models/trained_plant_disease_model.tflite");
-      print("Modèle chargé avec succès");
+      _interpreter = await Interpreter.fromAsset("assets/model/plant_disease_model.tflite");
     } catch (e) {
-      print("Erreur lors du chargement du modèle: $e");
-      _showDialog(
-          "Impossible de charger le modèle. Vérifiez son chemin et son format.");
+      _showError("Erreur de chargement du modèle");
     }
-  }
-
-  bool _isModelLoaded() {
-    if (_interpreter == null) {
-      _showDialog("Le modèle n'est pas chargé. Veuillez réessayer.");
-      return false;
-    }
-    return true;
   }
 
   Future<void> _selectImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
+    final picked = await _picker.pickImage(source: source);
+    if (picked != null) {
       setState(() {
-        _selectedImage = File(pickedFile.path);
+        _selectedImage = File(picked.path);
       });
-      await _predict(pickedFile.path);
-    } else {
-      _showDialog("Aucune image sélectionnée.");
+      await _analyze(picked.path);
     }
   }
 
-  Future<List<List<List<List<double>>>>> _preprocessImage(
-      String imagePath) async {
-    // 1. Charger l'image depuis le fichier
-    File imageFile = File(imagePath);
-    Uint8List imageBytes = await imageFile.readAsBytes();
-
-    // 2. Décoder l'image
-    img.Image? image = img.decodeImage(imageBytes);
-    if (image == null) {
-      throw Exception("Impossible de charger l'image.");
+  Future<void> _analyze(String path) async {
+    if (_interpreter == null) {
+      _showError("Modèle non chargé");
+      return;
     }
-
-    // 3. Redimensionner l'image à la taille requise par le modèle (ex: 224x224)
-    img.Image resizedImage = img.copyResize(image, width: 224, height: 224);
-
-    // 4. Normaliser les pixels (de 0-255 à 0.0-1.0)
-    List<List<List<List<double>>>> input = List.generate(
-      1,
-      (batch) => List.generate(
-        224,
-        (y) => List.generate(
-          224,
-          (x) {
-            img.Pixel pixel = resizedImage.getPixel(x, y);
-            return [
-              pixel.r / 255.0, // Rouge normalisé
-              pixel.g / 255.0, // Vert normalisé
-              pixel.b / 255.0 // Bleu normalisé
-            ];
-          },
-        ),
-      ),
-    );
-
-    return input;
-  }
-
-  Future<void> _predict(String imagePath) async {
-    if (!_isModelLoaded()) return;
 
     setState(() {
       _isProcessing = true;
-      _result = null;
+      _message = null;
+      _disease = null;
+      _advice = null;
       _accuracy = null;
     });
 
     try {
-      var input = await _preprocessImage(imagePath);
-      List<List<double>> output =
-          List.generate(1, (index) => List.filled(39, 0));
+      final imgData = File(path).readAsBytesSync();
+      final decoded = img.decodeImage(imgData)!;
+      final resized = img.copyResize(decoded, width: 224, height: 224);
+
+      final input = List.generate(
+        1,
+        (_) => List.generate(
+          224,
+          (y) => List.generate(
+            224,
+            (x) {
+              final pixel = resized.getPixel(x, y);
+              return [pixel.r / 255.0, pixel.g / 255.0, pixel.b / 255.0];
+            },
+          ),
+        ),
+      );
+
+      final output = List.generate(1, (_) => List.filled(39, 0.0));
       _interpreter!.run(input, output);
 
-      int bestIndex = 0;
-      double bestConfidence = 0.0;
+      int index = 0;
+      double confidence = 0.0;
       for (int i = 0; i < output[0].length; i++) {
-        if (output[0][i] > bestConfidence) {
-          bestConfidence = output[0][i];
-          bestIndex = i;
+        if (output[0][i] > confidence) {
+          confidence = output[0][i];
+          index = i;
         }
       }
 
-      if (plantDiseaseData.containsKey(bestIndex)) {
-        PlantDiseaseInfo diseaseInfo = plantDiseaseData[bestIndex]!;
-        setState(() {
-          _result = "Maladie détectée : ${diseaseInfo.name}";
-          _accuracy =
-              "Précision : ${(bestConfidence * 100).toStringAsFixed(2)}%\n"
-              "Description : ${diseaseInfo.description}\n"
-              "Solutions : ${diseaseInfo.solutions}";
-        });
-      } else {
-        setState(() {
-          _result = "Classe inconnue : $bestIndex";
-          _accuracy =
-              "Précision : ${(bestConfidence * 100).toStringAsFixed(2)}%";
-        });
+      if (!plantDiseaseData.containsKey(index)) {
+        _showError("Classe inconnue détectée");
+        return;
       }
+
+      final result = plantDiseaseData[index]!;
+      final labelLower = result.name.toLowerCase();
+
+      if (!allowedPlants.any((plant) => labelLower.contains(plant))) {
+        _showError("Image invalide : plante non reconnue (tomate, pommier, manguier)");
+        return;
+      }
+
+      setState(() {
+        _disease = result.name;
+        _advice = result.solutions;
+        _accuracy = (confidence * 100).toStringAsFixed(2);
+        _message = result.description;
+      });
     } catch (e) {
-      _showDialog("Erreur lors de la prédiction: $e");
+      _showError("Erreur durant la prédiction");
     } finally {
       setState(() {
         _isProcessing = false;
@@ -148,22 +124,13 @@ class _PredictionPageState extends State<PredictionPage> {
     }
   }
 
-  void _showDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Attention"),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
+  void _showError(String msg) {
+    setState(() {
+      _message = msg;
+      _disease = null;
+      _advice = null;
+      _accuracy = null;
+    });
   }
 
   @override
@@ -171,54 +138,75 @@ class _PredictionPageState extends State<PredictionPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Prédiction de maladies des plantes")),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_selectedImage != null)
-              Image.file(_selectedImage!, height: 200),
-            const SizedBox(height: 10),
-            _isProcessing
-                ? const SpinKitFadingCircle(color: Colors.green, size: 50.0)
-                : _result != null
-                    ? Container(
-                        padding: const EdgeInsets.all(10),
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.green[100],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(_result!,
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 5),
-                            Text(_accuracy ?? "",
-                                style: const TextStyle(
-                                    fontSize: 16, color: Colors.blue)),
-                          ],
-                        ),
-                      )
-                    : const Text("Chargez une image pour prédire",
-                        style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.photo_library,
-                      size: 40, color: Colors.blue),
-                  onPressed: () => _selectImage(ImageSource.gallery),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_selectedImage != null)
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Image.file(_selectedImage!, height: 200),
                 ),
-                const SizedBox(width: 20),
-                IconButton(
-                  icon: const Icon(Icons.camera_alt,
-                      size: 40, color: Colors.green),
-                  onPressed: () => _selectImage(ImageSource.camera),
-                ),
-              ],
-            ),
-          ],
+              if (_isProcessing)
+                const SpinKitFadingCircle(color: Colors.green, size: 50)
+              else if (_disease != null)
+                Card(
+                  margin: const EdgeInsets.all(12),
+                  color: Colors.green.shade50,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text("🌿 ${_disease!}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Text("📌 Précision: $_accuracy%", style: TextStyle(color: Colors.green[900])),
+                        const SizedBox(height: 8),
+                        Text("💬 Description: $_message"),
+                        const SizedBox(height: 8),
+                        Text("🛠️ Conseil: $_advice"),
+                      ],
+                    ),
+                  ),
+                )
+              else if (_message != null)
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade300,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      _message!,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              else
+                const Text("Sélectionnez une image à analyser"),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _selectImage(ImageSource.gallery),
+                    icon: const Icon(Icons.photo),
+                    label: const Text("Galerie"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ),
+                  const SizedBox(width: 20),
+                  ElevatedButton.icon(
+                    onPressed: () => _selectImage(ImageSource.camera),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text("Caméra"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

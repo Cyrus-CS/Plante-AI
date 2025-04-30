@@ -16,6 +16,7 @@ class PredictionPage extends StatefulWidget {
 class _PredictionPageState extends State<PredictionPage> {
   final ImagePicker _picker = ImagePicker();
   Interpreter? _interpreter;
+  bool _modelLoaded = false;
 
   bool _isProcessing = false;
   File? _selectedImage;
@@ -36,8 +37,9 @@ class _PredictionPageState extends State<PredictionPage> {
   Future<void> _loadModel() async {
     try {
       _interpreter = await Interpreter.fromAsset("assets/model/plant_disease_model.tflite");
+      _modelLoaded = true;
     } catch (e) {
-      _showError("Erreur de chargement du modèle");
+      _modelLoaded = false;
     }
   }
 
@@ -47,16 +49,17 @@ class _PredictionPageState extends State<PredictionPage> {
       setState(() {
         _selectedImage = File(picked.path);
       });
+
+      if (!_modelLoaded) {
+        _showError("Erreur de chargement du modèle");
+        return;
+      }
+
       await _analyze(picked.path);
     }
   }
 
   Future<void> _analyze(String path) async {
-    if (_interpreter == null) {
-      _showError("Modèle non chargé");
-      return;
-    }
-
     setState(() {
       _isProcessing = true;
       _message = null;

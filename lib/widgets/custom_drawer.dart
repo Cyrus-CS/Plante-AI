@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../core/theme_provider.dart';
+import '../testj/history_page.dart';
+import '../view/about_page.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(int) onItemSelected;
@@ -36,24 +38,26 @@ class CustomDrawer extends StatelessWidget {
 
             // Accueil
             ListTile(
-              leading: const Icon(Icons.home),
-              title: Text('Accueil'.tr()),
-              onTap: () => onItemSelected(0),
-            ),
-
-            // Historiques
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: Text('historique'.tr()),
-              onTap: () => onItemSelected(1),
-            ),
-
-            // Aide / À propos
-            ListTile(
-              leading: const Icon(Icons.info_outline),
-              title: Text('A propos'.tr()),
-              onTap: () => onItemSelected(2),
-            ),
+            leading: const Icon(Icons.home),
+            title: Text('Accueil'.tr()),
+            onTap: () => onItemSelected(1),
+          ),
+          ListTile(
+            leading: const Icon(Icons.history),
+            title: Text('Historique'.tr()),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HistoryPage()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text('À propos'.tr()),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const AboutPage()));
+            },
+          ),
 
             // Paramètres
             ExpansionTile(

@@ -1,9 +1,9 @@
-#Sat Apr 19 23:33:42 WAT 2025
-base.0=C\:\\Users\\diag2france\\Documents\\project\\plant_disease\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=C\:\\Users\\diag2france\\Documents\\project\\plant_disease\\build\\app\\intermediates\\dex\\debug\\mergeLibDexDebug\\0\\classes.dex
-base.2=C\:\\Users\\diag2france\\Documents\\project\\plant_disease\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.3=C\:\\Users\\diag2france\\Documents\\project\\plant_disease\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex
-base.4=C\:\\Users\\diag2france\\Documents\\project\\plant_disease\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+#Mon Apr 28 18:40:33 WAT 2025
+base.0=C\:\\Users\\diag2france\\Documents\\Plante-AI\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=C\:\\Users\\diag2france\\Documents\\Plante-AI\\build\\app\\intermediates\\dex\\debug\\mergeLibDexDebug\\0\\classes.dex
+base.2=C\:\\Users\\diag2france\\Documents\\Plante-AI\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.3=C\:\\Users\\diag2france\\Documents\\Plante-AI\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\12\\classes.dex
+base.4=C\:\\Users\\diag2france\\Documents\\Plante-AI\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=0/classes.dex

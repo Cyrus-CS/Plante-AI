@@ -144,7 +144,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             Text("Conseil : ${prediction['advice'] ?? 'N/A'}"),
                             Text("Date : ${prediction['dateTime'] ?? ''}"),
                             Text(
-                              "Statut : ${isSuccess ? 'Succès ✅' : 'Erreur ❌'}",
+                              "Statut : ${isSuccess ? 'Succès ' : 'Erreur '}",
                               style: TextStyle(
                                 color: isSuccess ? Colors.green : Colors.red,
                                 fontWeight: FontWeight.w600,

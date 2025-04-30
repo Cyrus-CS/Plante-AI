@@ -1,0 +1,1 @@
+ C:\\Users\\diag2france\\Documents\\Plante-AI\\.dart_tool\\flutter_build\\674b581f65a3468d66201bf82ef4aa6d\\native_assets.json: 

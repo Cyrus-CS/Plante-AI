@@ -116,6 +116,25 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\diag2france\\Documents\\Plante-AI\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "176,832",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "483,998"
+                    },
+                    "to": {
+                        "startLines": "1488,1492",
+                        "startColumns": "4,4",
+                        "startOffsets": "93582,93763",
+                        "endLines": "1491,1494",
+                        "endColumns": "12,12",
+                        "endOffsets": "93758,93927"
+                    }
+                },
+                {
                     "source": "C:\\Users\\diag2france\\.gradle\\caches\\8.10.2\\transforms\\b3d51a44ab6b56289d4858158a1ad6dd\\transformed\\jetified-savedstate-1.2.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -255,25 +274,6 @@
                         "startOffsets": "18211,18251,18468,18806,18861,19878,19932,19984,20033,20094",
                         "endColumns": "39,46,42,54,46,53,51,48,60,49",
                         "endOffsets": "18246,18293,18506,18856,18903,19927,19979,20028,20089,20139"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\diag2france\\Documents\\project\\plant_disease\\android\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "176,832",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "483,998"
-                    },
-                    "to": {
-                        "startLines": "1488,1492",
-                        "startColumns": "4,4",
-                        "startOffsets": "93582,93763",
-                        "endLines": "1491,1494",
-                        "endColumns": "12,12",
-                        "endOffsets": "93758,93927"
                     }
                 }
             ]

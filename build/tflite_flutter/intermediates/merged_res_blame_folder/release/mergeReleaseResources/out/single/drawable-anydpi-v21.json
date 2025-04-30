@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_answer_video_low.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_answer_video_low.xml"
+    },
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_decline.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_decline.xml"
+    },
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_answer_video.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_answer_video.xml"
+    },
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_decline_low.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_decline_low.xml"
+    },
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_answer.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_answer.xml"
+    },
+    {
+        "merged": "org.tensorflow.tflite_flutter-release-25:/drawable-anydpi-v21/ic_call_answer_low.xml",
+        "source": "org.tensorflow.tflite_flutter-core-1.13.1-8:/drawable-anydpi-v21/ic_call_answer_low.xml"
+    }
+]

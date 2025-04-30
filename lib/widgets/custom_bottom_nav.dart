@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../testj/history_page.dart';
+import 'package:image_picker/image_picker.dart';
 import '../view/prediction_screen.dart';
+import '../testj/history_page.dart';
 import '../widgets/custom_drawer.dart';
 
 class CustomBottomNav extends StatefulWidget {
@@ -11,95 +12,128 @@ class CustomBottomNav extends StatefulWidget {
 }
 
 class _CustomBottomNavState extends State<CustomBottomNav> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 1; // Page Accueil visible au démarrage
+  int _activeIcon = 2;    // Icone "Photo" sélectionnée visuellement
 
-  final Color primaryColor = Color(0xFF234520);
-  final Color secondaryColor = Color(0xFF5B8C2D);
+  final Color primaryColor = const Color(0xFF234520);
+  final Color secondaryColor = const Color(0xFF5B8C2D);
+
+  final ImagePicker _picker = ImagePicker();
 
   final List<Widget> _pages = [
-    const HistoryPage(),       // Gallérie
-    const PredictionPage(),    // Accueil
-    const PredictionPage(),    // Photo
+    const HistoryPage(),      // 0 = Gallérie (analyse galerie)
+    const PredictionPage(),   // 1 = Accueil
+    const PredictionPage(),   // 2 = Photo
   ];
 
-  void _onDrawerItemSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.of(context).pop();
+  Future<void> _openCamera() async {
+    final picked = await _picker.pickImage(source: ImageSource.camera);
+    if (picked != null && context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PredictionPage(imagePath: picked.path),
+        ),
+      );
+    }
   }
 
-  void _onBottomNavTapped(int index) {
+  Future<void> _openGallery() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null && context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PredictionPage(imagePath: picked.path),
+        ),
+      );
+    }
+  }
+
+  void _onNavTap(int index) async {
     setState(() {
-      _selectedIndex = index;
+      _activeIcon = index;
     });
+
+    if (index == 0) {
+      await _openGallery();
+    } else if (index == 2) {
+      await _openCamera();
+    } else {
+      setState(() => _selectedIndex = index);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(onItemSelected: _onDrawerItemSelected),
+      drawer: CustomDrawer(onItemSelected: (i) {
+        setState(() {
+          _selectedIndex = i;
+          _activeIcon = i;
+        });
+        Navigator.pop(context);
+      }),
       appBar: AppBar(
         title: const Text('PlantIA'),
         backgroundColor: primaryColor,
       ),
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        child: Container(
-          height: 60,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(icon: Icons.home, label: 'Accueil', index: 1),
-              const SizedBox(width: 40), // pour le notch central
-              _buildNavItem(icon: Icons.photo_sharp, label: 'Gallérie', index: 0),
-            ],
-          ),
+      bottomNavigationBar: Container(
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(icon: Icons.photo, label: "Gallérie", index: 0),
+            _buildPhotoButton(),
+            _buildNavItem(icon: Icons.home, label: "Accueil", index: 1),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _onBottomNavTapped(2),
-        backgroundColor: _selectedIndex == 2 ? secondaryColor : Colors.grey.shade300,
-        child: Icon(
-          Icons.photo_camera,
-          size: 30,
-          color: _selectedIndex == 2 ? primaryColor : Colors.black54,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
   Widget _buildNavItem({required IconData icon, required String label, required int index}) {
-    final bool isSelected = _selectedIndex == index;
+    final bool isSelected = _activeIcon == index;
 
     return GestureDetector(
-      onTap: () => _onBottomNavTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? secondaryColor.withOpacity(0.2) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: isSelected ? primaryColor : Colors.grey),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? primaryColor : Colors.grey,
-                fontSize: 12,
-              ),
+      onTap: () => _onNavTap(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: isSelected ? primaryColor : Colors.grey),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isSelected ? primaryColor : Colors.grey,
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhotoButton() {
+    final bool isSelected = _activeIcon == 2;
+
+    return GestureDetector(
+      onTap: () => _onNavTap(2),
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isSelected ? secondaryColor.withOpacity(0.2) : Colors.transparent,
+        ),
+        child: Icon(
+          Icons.photo_camera,
+          size: 36,
+          color: isSelected ? primaryColor : Colors.grey,
         ),
       ),
     );

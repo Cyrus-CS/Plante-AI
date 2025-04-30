@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: Text('À propos'.tr()),
+            title: Text('A propos'.tr()),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const AboutPage()));
@@ -67,7 +67,7 @@ class CustomDrawer extends StatelessWidget {
                 // Thème
                 SwitchListTile(
                   secondary: const Icon(Icons.brightness_6),
-                  title: Text('thème'.tr()),
+                  title: Text('Mode sombre'.tr()),
                   value: themeProvider.themeMode == ThemeMode.dark,
                   onChanged: (val) => themeProvider.toggleTheme(val),
                 ),
@@ -75,7 +75,7 @@ class CustomDrawer extends StatelessWidget {
                 // Langue
                 ListTile(
                   leading: const Icon(Icons.language),
-                  title: Text('language'.tr()),
+                  title: Text('Langues'.tr()),
                   onTap: () {
                     _showLanguageDialog(context);
                   },

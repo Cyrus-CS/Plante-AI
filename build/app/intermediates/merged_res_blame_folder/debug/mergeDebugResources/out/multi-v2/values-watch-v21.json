@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.plant_disease.app-mergeDebugResources-39:/values-watch-v21/values-watch-v21.xml",
+            "outputFile": "com.example.plant_disease.app-mergeDebugResources-42:/values-watch-v21/values-watch-v21.xml",
             "map": [
                 {
                     "source": "C:\\Users\\diag2france\\.gradle\\caches\\8.10.2\\transforms\\3a4dcd3e8c92efa77cfa193b658940d9\\transformed\\appcompat-1.1.0\\res\\values-watch-v21\\values-watch-v21.xml",

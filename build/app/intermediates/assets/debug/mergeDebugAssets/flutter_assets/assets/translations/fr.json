@@ -1,13 +1,15 @@
 {
-    "Plant Disease": "Maladies des plantes",
-    "Settings": "Paramètres",
-    "History": "Historique",
-    "Predict": "Prédire",
-    "Dark Mode": "Mode sombre",
-    "Language": "Langue",
-    "Home": "Accueil",
-    "Scan a leaf": "Scanner une feuille",
-    "Result": "Résultat",
-    "Accuracy": "Précision"
+    "Maladies des plantes": "Plant Disease ",
+    "Paramètres": "Settings",
+    "Historique": "History",
+    "A propos"  : "About",
+    "Aide" : "Help",
+    "Prédire": "Predict",
+    "Mode sombre": "Dark Mode",
+    "Langues": "Language",
+    "Accueil": "Home",
+    "Scanner une feuille": "Scan a leaf",
+    "Résultat": "Result",
+    "Précision": "Accuracy"
   }
   

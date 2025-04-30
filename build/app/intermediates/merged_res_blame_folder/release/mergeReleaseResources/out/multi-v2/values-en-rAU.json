@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.plant_disease.app-mergeReleaseResources-39:/values-en-rAU/values-en-rAU.xml",
+            "outputFile": "com.example.plant_disease.app-mergeReleaseResources-42:/values-en-rAU/values-en-rAU.xml",
             "map": [
                 {
                     "source": "C:\\Users\\diag2france\\.gradle\\caches\\8.10.2\\transforms\\8cf478dec41eed746328fa8046755ba2\\transformed\\core-1.13.1\\res\\values-en-rAU\\values-en-rAU.xml",

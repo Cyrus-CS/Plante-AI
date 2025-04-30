@@ -7,7 +7,9 @@ import 'package:image/image.dart' as img;
 import '../testj/plant_data.dart';
 
 class PredictionPage extends StatefulWidget {
-  const PredictionPage({super.key});
+  final String? imagePath;
+
+  const PredictionPage({super.key, this.imagePath});
 
   @override
   State<PredictionPage> createState() => _PredictionPageState();
@@ -31,7 +33,14 @@ class _PredictionPageState extends State<PredictionPage> {
   @override
   void initState() {
     super.initState();
-    _loadModel();
+    _loadModel().then((_) {
+      if (widget.imagePath != null) {
+        setState(() {
+          _selectedImage = File(widget.imagePath!);
+        });
+        _analyze(widget.imagePath!);
+      }
+    });
   }
 
   Future<void> _loadModel() async {
@@ -160,13 +169,13 @@ class _PredictionPageState extends State<PredictionPage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        Text("🌿 ${_disease!}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(" ${_disease!}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
-                        Text("📌 Précision: $_accuracy%", style: TextStyle(color: Colors.green[900])),
+                        Text(" Précision: $_accuracy%", style: TextStyle(color: Colors.green[900])),
                         const SizedBox(height: 8),
-                        Text("💬 Description: $_message"),
+                        Text(" Description: $_message"),
                         const SizedBox(height: 8),
-                        Text("🛠️ Conseil: $_advice"),
+                        Text(" Conseil: $_advice"),
                       ],
                     ),
                   ),
@@ -196,14 +205,14 @@ class _PredictionPageState extends State<PredictionPage> {
                   ElevatedButton.icon(
                     onPressed: () => _selectImage(ImageSource.gallery),
                     icon: const Icon(Icons.photo),
-                    label: const Text("Galerie"),
+                    label: const Text("Gallerie"),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
                   const SizedBox(width: 20),
                   ElevatedButton.icon(
                     onPressed: () => _selectImage(ImageSource.camera),
                     icon: const Icon(Icons.camera_alt),
-                    label: const Text("Caméra"),
+                    label: const Text("Photo"),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
                 ],

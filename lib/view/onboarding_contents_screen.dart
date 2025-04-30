@@ -24,7 +24,7 @@ List<OnboardingContents> contents = [
   ),
   OnboardingContents(
     title: "Résultats Prédits",
-    image: "assets/images/3.gif",
+    image: "assets/images/resultats.png",
     desc:
         "Après avoir capturé ou téléchargé une image, l'application effectue une analyse approfondie pour détecter toute anomalie ou maladie sur la plante.",
   ),
